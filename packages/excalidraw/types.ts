@@ -197,6 +197,7 @@ export type InteractiveCanvasAppState = Readonly<
     // SnapLines
     snapLines: AppState["snapLines"];
     zenModeEnabled: AppState["zenModeEnabled"];
+    cleanModeEnabled: AppState["cleanModeEnabled"];
     editingElement: AppState["editingElement"];
   }
 >;
@@ -320,6 +321,7 @@ export interface AppState {
   shouldCacheIgnoreZoom: boolean;
   toast: { message: string; closable?: boolean; duration?: number } | null;
   zenModeEnabled: boolean;
+  cleanModeEnabled: boolean;
   theme: Theme;
   gridSize: number | null;
   viewModeEnabled: boolean;
@@ -463,6 +465,7 @@ export interface ExcalidrawProps {
   langCode?: Language["code"];
   viewModeEnabled?: boolean;
   zenModeEnabled?: boolean;
+  cleanModeEnabled?: boolean;
   gridModeEnabled?: boolean;
   objectsSnapModeEnabled?: boolean;
   libraryReturnUrl?: string;

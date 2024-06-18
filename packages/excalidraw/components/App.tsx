@@ -28,6 +28,7 @@ import {
   actionToggleGridMode,
   actionToggleStats,
   actionToggleZenMode,
+  actionToggleCleanMode,
   actionUnbindText,
   actionBindText,
   actionUngroup,
@@ -642,6 +643,7 @@ class App extends React.Component<AppProps, AppState> {
       excalidrawAPI,
       viewModeEnabled = false,
       zenModeEnabled = false,
+      cleanModeEnabled = false,
       gridModeEnabled = false,
       objectsSnapModeEnabled = false,
       theme = defaultAppState.theme,
@@ -654,6 +656,7 @@ class App extends React.Component<AppProps, AppState> {
       ...this.getCanvasOffsets(),
       viewModeEnabled,
       zenModeEnabled,
+      cleanModeEnabled,
       objectsSnapModeEnabled,
       gridSize: gridModeEnabled ? GRID_SIZE : null,
       name,
@@ -1547,6 +1550,7 @@ class App extends React.Component<AppProps, AppState> {
                             this.state.showWelcomeScreen &&
                             this.state.activeTool.type === "selection" &&
                             !this.state.zenModeEnabled &&
+                            !this.state.cleanModeEnabled &&
                             !this.scene.getElementsIncludingDeleted().length
                           }
                           app={this}
@@ -2174,6 +2178,7 @@ class App extends React.Component<AppProps, AppState> {
     if (actionResult.appState || editingElement || this.state.contextMenu) {
       let viewModeEnabled = actionResult?.appState?.viewModeEnabled || false;
       let zenModeEnabled = actionResult?.appState?.zenModeEnabled || false;
+      let cleanModeEnabled = actionResult?.appState?.cleanModeEnabled || false;
       let gridSize = actionResult?.appState?.gridSize || null;
       const theme =
         actionResult?.appState?.theme || this.props.theme || THEME.LIGHT;
@@ -2186,6 +2191,9 @@ class App extends React.Component<AppProps, AppState> {
 
       if (typeof this.props.zenModeEnabled !== "undefined") {
         zenModeEnabled = this.props.zenModeEnabled;
+      }
+      if (typeof this.props.cleanModeEnabled !== "undefined") {
+        cleanModeEnabled = this.props.cleanModeEnabled;
       }
 
       if (typeof this.props.gridModeEnabled !== "undefined") {
@@ -2211,6 +2219,7 @@ class App extends React.Component<AppProps, AppState> {
           editingElement,
           viewModeEnabled,
           zenModeEnabled,
+          cleanModeEnabled,
           gridSize,
           theme,
           name,
@@ -2752,6 +2761,10 @@ class App extends React.Component<AppProps, AppState> {
 
     if (prevProps.zenModeEnabled !== this.props.zenModeEnabled) {
       this.setState({ zenModeEnabled: !!this.props.zenModeEnabled });
+    }
+    
+    if (prevProps.cleanModeEnabled !== this.props.cleanModeEnabled) {
+      this.setState({ cleanModeEnabled: !!this.props.cleanModeEnabled });
     }
 
     if (prevProps.theme !== this.props.theme && this.props.theme) {
@@ -5694,6 +5707,7 @@ class App extends React.Component<AppProps, AppState> {
           this.state.zoom,
           scenePointerX,
           scenePointerY,
+          this.state,
         );
         segmentMidPointHoveredCoords =
           LinearElementEditor.getSegmentMidpointHitCoords(
@@ -9701,6 +9715,7 @@ class App extends React.Component<AppProps, AppState> {
           ...options,
           actionToggleGridMode,
           actionToggleZenMode,
+          actionToggleCleanMode,
           actionToggleViewMode,
           actionToggleStats,
         ];
@@ -9719,6 +9734,7 @@ class App extends React.Component<AppProps, AppState> {
         actionToggleGridMode,
         actionToggleObjectsSnapMode,
         actionToggleZenMode,
+        actionToggleCleanMode,
         actionToggleViewMode,
         actionToggleStats,
       ];

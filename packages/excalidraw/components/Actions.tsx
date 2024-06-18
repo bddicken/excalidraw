@@ -30,6 +30,7 @@ import {
 } from "../element/typeChecks";
 import clsx from "clsx";
 import { actionToggleZenMode } from "../actions";
+import { actionToggleCleanMode } from "../actions";
 import { Tooltip } from "./Tooltip";
 import {
   shouldAllowVerticalAlign,

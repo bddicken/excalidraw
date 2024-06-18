@@ -118,7 +118,9 @@ export class LinearElementEditor {
   // static methods
   // ---------------------------------------------------------------------------
 
-  static POINT_HANDLE_SIZE = 10;
+  static POINT_HANDLE_SIZE_REGULAR = 10;
+  static POINT_HANDLE_SIZE_CLEAN   = 50;
+
   /**
    * @param id the `elementId` from the instance of this class (so that we can
    *  statically guarantee this method returns an ExcalidrawLinearElement)
@@ -467,6 +469,7 @@ export class LinearElementEditor {
           element.points[index],
           element.points[index + 1],
           appState.zoom,
+          appState.cleanModeEnabled,
         )
       ) {
         midpoints.push(null);
@@ -505,6 +508,7 @@ export class LinearElementEditor {
       appState.zoom,
       scenePointer.x,
       scenePointer.y,
+      appState,
     );
     if (clickedPointIndex >= 0) {
       return null;
@@ -517,8 +521,10 @@ export class LinearElementEditor {
       return null;
     }
 
-    const threshold =
-      LinearElementEditor.POINT_HANDLE_SIZE / appState.zoom.value;
+    const pointHandleSize = appState.cleanModeEnabled ? 
+                            LinearElementEditor.POINT_HANDLE_SIZE_CLEAN : 
+                            LinearElementEditor.POINT_HANDLE_SIZE_REGULAR;
+    const threshold = pointHandleSize / appState.zoom.value;
 
     const existingSegmentMidpointHitCoords =
       linearElementEditor.segmentMidPointHoveredCoords;
@@ -559,6 +565,7 @@ export class LinearElementEditor {
     startPoint: Point,
     endPoint: Point,
     zoom: AppState["zoom"],
+    cleanModeEnabled: boolean,
   ) {
     let distance = distance2d(
       startPoint[0],
@@ -569,8 +576,11 @@ export class LinearElementEditor {
     if (element.points.length > 2 && element.roundness) {
       distance = getBezierCurveLength(element, endPoint);
     }
-
-    return distance * zoom.value < LinearElementEditor.POINT_HANDLE_SIZE * 4;
+    
+    const pointHandleSize = cleanModeEnabled ? 
+                            LinearElementEditor.POINT_HANDLE_SIZE_CLEAN : 
+                            LinearElementEditor.POINT_HANDLE_SIZE_REGULAR;
+    return distance * zoom.value < pointHandleSize * 4;
   }
 
   static getSegmentMidPoint(
@@ -728,6 +738,7 @@ export class LinearElementEditor {
       appState.zoom,
       scenePointer.x,
       scenePointer.y,
+      appState
     );
     // if we clicked on a point, set the element as hitElement otherwise
     // it would get deselected if the point is outside the hitbox area
@@ -954,6 +965,7 @@ export class LinearElementEditor {
     zoom: AppState["zoom"],
     x: number,
     y: number,
+    appState: AppState,
   ) {
     const pointHandles = LinearElementEditor.getPointsGlobalCoordinates(
       element,
@@ -963,12 +975,15 @@ export class LinearElementEditor {
     // loop from right to left because points on the right are rendered over
     // points on the left, thus should take precedence when clicking, if they
     // overlap
+    const pointHandleSize = appState.cleanModeEnabled ? 
+                            LinearElementEditor.POINT_HANDLE_SIZE_CLEAN : 
+                            LinearElementEditor.POINT_HANDLE_SIZE_REGULAR;
     while (--idx > -1) {
       const point = pointHandles[idx];
       if (
         distance2d(x, y, point[0], point[1]) * zoom.value <
         // +1px to account for outline stroke
-        LinearElementEditor.POINT_HANDLE_SIZE + 1
+        pointHandleSize + 1
       ) {
         return idx;
       }

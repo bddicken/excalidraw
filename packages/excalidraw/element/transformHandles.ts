@@ -305,6 +305,16 @@ export const shouldShowBoundingBox = (
   elements: readonly NonDeletedExcalidrawElement[],
   appState: InteractiveCanvasAppState,
 ) => {
+  if (appState.cleanModeEnabled) {
+    transformHandleSizes.mouse = 50;
+    transformHandleSizes.pen = 50;
+    transformHandleSizes.touch = 50;
+    return false;
+  } else {
+    transformHandleSizes.mouse = 8;
+    transformHandleSizes.pen = 16;
+    transformHandleSizes.touch = 24;
+  }
   if (appState.editingLinearElement) {
     return false;
   }

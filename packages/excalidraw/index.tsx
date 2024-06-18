@@ -31,6 +31,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     langCode = defaultLang.code,
     viewModeEnabled,
     zenModeEnabled,
+    cleanModeEnabled,
     gridModeEnabled,
     libraryReturnUrl,
     theme,
@@ -118,6 +119,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           langCode={langCode}
           viewModeEnabled={viewModeEnabled}
           zenModeEnabled={zenModeEnabled}
+          cleanModeEnabled={cleanModeEnabled}
           gridModeEnabled={gridModeEnabled}
           libraryReturnUrl={libraryReturnUrl}
           theme={theme}

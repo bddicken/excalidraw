@@ -202,6 +202,7 @@ const getRelevantAppStateProps = (
   activeEmbeddable: appState.activeEmbeddable,
   snapLines: appState.snapLines,
   zenModeEnabled: appState.zenModeEnabled,
+  cleanModeEnabled: appState.cleanModeEnabled,
   editingElement: appState.editingElement,
 });
 

@@ -104,12 +104,16 @@ const highlightPoint = (
   appState: InteractiveCanvasAppState,
 ) => {
   context.fillStyle = "rgba(105, 101, 219, 0.4)";
+    
+  const pointHandleSize = appState.cleanModeEnabled ? 
+                          LinearElementEditor.POINT_HANDLE_SIZE_CLEAN : 
+                          LinearElementEditor.POINT_HANDLE_SIZE_REGULAR;
 
   fillCircle(
     context,
     point[0],
     point[1],
-    LinearElementEditor.POINT_HANDLE_SIZE / appState.zoom.value,
+    pointHandleSize / appState.zoom.value,
     false,
   );
 };
@@ -469,10 +473,12 @@ const renderLinearPointHandles = (
     elementsMap,
   );
 
-  const { POINT_HANDLE_SIZE } = LinearElementEditor;
+  const pointHandleSize = appState.cleanModeEnabled ? 
+                          LinearElementEditor.POINT_HANDLE_SIZE_CLEAN : 
+                          LinearElementEditor.POINT_HANDLE_SIZE_REGULAR;
   const radius = appState.editingLinearElement
-    ? POINT_HANDLE_SIZE
-    : POINT_HANDLE_SIZE / 2;
+    ? pointHandleSize
+    : pointHandleSize / 2;
   points.forEach((point, idx) => {
     const isSelected =
       !!appState.editingLinearElement?.selectedPointsIndices?.includes(idx);
@@ -523,7 +529,7 @@ const renderLinearPointHandles = (
         context,
         appState,
         segmentMidPoint,
-        POINT_HANDLE_SIZE / 2,
+        pointHandleSize / 2,
         false,
         true,
       );
@@ -643,7 +649,7 @@ const _renderInteractiveScene = ({
     }
   });
 
-  if (editingLinearElement) {
+  if (editingLinearElement && !appState.cleanModeEnabled) {
     renderLinearPointHandles(
       context,
       appState,
@@ -715,7 +721,8 @@ const _renderInteractiveScene = ({
   // correct element from visible elements
   if (
     selectedElements.length === 1 &&
-    appState.editingLinearElement?.elementId === selectedElements[0].id
+    appState.editingLinearElement?.elementId === selectedElements[0].id &&
+    !appState.cleanModeEnabled
   ) {
     renderLinearPointHandles(
       context,
@@ -727,7 +734,8 @@ const _renderInteractiveScene = ({
 
   if (
     appState.selectedLinearElement &&
-    appState.selectedLinearElement.hoverPointIndex >= 0
+    appState.selectedLinearElement.hoverPointIndex >= 0 &&
+    !appState.cleanModeEnabled 
   ) {
     renderLinearElementPointHighlight(context, appState, elementsMap);
   }
@@ -741,7 +749,8 @@ const _renderInteractiveScene = ({
     if (
       isSingleLinearElementSelected &&
       appState.selectedLinearElement?.elementId === selectedElements[0].id &&
-      !selectedElements[0].locked
+      !selectedElements[0].locked &&
+      !appState.cleanModeEnabled
     ) {
       renderLinearPointHandles(
         context,
